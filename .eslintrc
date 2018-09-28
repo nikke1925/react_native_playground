@@ -1,0 +1,38 @@
+{
+  "parser": "babel-eslint",
+  "plugins": ["flowtype", "react-native"],
+  "extends": "airbnb",
+  "globals": {
+    "fetch": false,
+    "__DEV__": false
+  },
+  "rules": {
+    "max-len": "off",
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
+    "react/prop-types": [
+      2,
+      {
+        "ignore": ["navigator"]
+      }
+    ],
+    "react/sort-comp": [
+      2,
+      {
+        "order": [
+          "type-annotations",
+          "static-methods",
+          "lifecycle",
+          "everything-else",
+          "render"
+        ]
+      }
+    ],
+    "class-methods-use-this": [0],
+    "flowtype/require-valid-file-annotation": [2, "always"]
+  }
+}
