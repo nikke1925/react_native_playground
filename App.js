@@ -24,6 +24,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  addButton: {
+    backgroundColor: '#28cd41',
+    color: '#FFF',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  deleteButton: {
+    color: '#ff3b30',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
   mainArea: {
     flex: 1,
     padding: 24,
@@ -67,20 +78,24 @@ export default class App extends Component<Props, State> {
     };
   }
 
+  // Add ボタンを押したときにボールを1個追加する
   onPressAddButton = () => {
     LayoutAnimation.configureNext(CustomLayoutSpring);
     this.setState({ ballNum: this.state.ballNum + 1 });
   };
 
+  // Delete ボタンを押したときにボールを1個削除する
   onPressDeleteButton = () => {
     if (this.state.ballNum === 0) return;
+    LayoutAnimation.configureNext(CustomLayoutSpring);
     this.setState({ ballNum: this.state.ballNum - 1 });
   };
 
+  // ボールをレンダリングする
   renderBalls = () => {
     const balls = [];
     for (let i = 0; i < this.state.ballNum; i += 1) {
-      balls.push(<Ball key={i} style={{ marginBottom: 16 }} />);
+      balls.unshift(<Ball key={i} style={{ marginBottom: 16 }} />);
     }
     return <View>{balls}</View>;
   };
@@ -89,8 +104,15 @@ export default class App extends Component<Props, State> {
     return (
       <View style={styles.container}>
         <View style={styles.buttonArea}>
-          <Text onPress={this.onPressAddButton}>Add</Text>
-          <Text onPress={this.onPressDeleteButton}>Delete</Text>
+          <Text
+            onPress={this.onPressAddButton}
+            style={[styles.addButton, { marginRight: 16 }]}
+          >
+            Add
+          </Text>
+          <Text onPress={this.onPressDeleteButton} style={styles.deleteButton}>
+            Delete
+          </Text>
         </View>
         <View style={styles.mainArea}>{this.renderBalls()}</View>
       </View>
