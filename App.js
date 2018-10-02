@@ -6,7 +6,7 @@ import { LayoutAnimation, StyleSheet, Text, View } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#333333',
   },
   welcome: {
     fontSize: 20,
@@ -55,18 +55,27 @@ type BallProps = {
   style: Object,
 };
 
+// ボール
 const Ball = (props: BallProps) => <View style={[styles.ball, props.style]} />;
 
+// アニメーション
 const CustomLayoutSpring = {
   duration: 400,
+  // ボール追加時のアニメーション
   create: {
     type: LayoutAnimation.Types.spring,
     property: LayoutAnimation.Properties.scaleXY,
-    springDamping: 0.7,
+    springDamping: 0.6,
   },
+  // ボール移動時のアニメーション
   update: {
     type: LayoutAnimation.Types.spring,
     springDamping: 0.7,
+  },
+  delete: {
+    type: LayoutAnimation.Types.spring,
+    property: LayoutAnimation.Properties.scaleXY,
+    springDamping: 0.2,
   },
 };
 
@@ -81,6 +90,7 @@ export default class App extends Component<Props, State> {
   // Add ボタンを押したときにボールを1個追加する
   onPressAddButton = () => {
     LayoutAnimation.configureNext(CustomLayoutSpring);
+    // LayoutAnimation.easeInEaseOut();
     this.setState({ ballNum: this.state.ballNum + 1 });
   };
 
@@ -88,6 +98,7 @@ export default class App extends Component<Props, State> {
   onPressDeleteButton = () => {
     if (this.state.ballNum === 0) return;
     LayoutAnimation.configureNext(CustomLayoutSpring);
+    // LayoutAnimation.easeInEaseOut();
     this.setState({ ballNum: this.state.ballNum - 1 });
   };
 
@@ -114,7 +125,9 @@ export default class App extends Component<Props, State> {
             Delete
           </Text>
         </View>
-        <View style={styles.mainArea}>{this.renderBalls()}</View>
+        <View style={styles.mainArea}>
+          <View style={{ alignItems: 'center' }}>{this.renderBalls()}</View>
+        </View>
       </View>
     );
   }
