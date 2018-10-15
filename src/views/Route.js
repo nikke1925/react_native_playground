@@ -1,7 +1,15 @@
 // @flow
 
 import React, { Component } from 'react';
-import { LayoutAnimation, StyleSheet, Text, View } from 'react-native';
+import {
+  ScrollView,
+  LayoutAnimation,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import BallAnimation from './BallAnimation';
+import LottieAnimation from './LottieAnimation';
 
 const styles = StyleSheet.create({
   container: {
@@ -79,56 +87,38 @@ const CustomLayoutSpring = {
   },
 };
 
-export default class App extends Component<Props, State> {
+export default class Route extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {
-      ballNum: 3, // 初期描画用
-    };
+    this.state = {};
   }
-
-  // Add ボタンを押したときにボールを1個追加する
-  onPressAddButton = () => {
-    LayoutAnimation.configureNext(CustomLayoutSpring);
-    // LayoutAnimation.easeInEaseOut();
-    this.setState({ ballNum: this.state.ballNum + 1 });
-  };
-
-  // Delete ボタンを押したときにボールを1個削除する
-  onPressDeleteButton = () => {
-    if (this.state.ballNum === 0) return;
-    LayoutAnimation.configureNext(CustomLayoutSpring);
-    // LayoutAnimation.easeInEaseOut();
-    this.setState({ ballNum: this.state.ballNum - 1 });
-  };
-
-  // ボールをレンダリングする
-  renderBalls = () => {
-    const balls = [];
-    for (let i = 0; i < this.state.ballNum; i += 1) {
-      balls.unshift(<Ball key={i} style={{ marginBottom: 16 }} />);
-    }
-    return <View>{balls}</View>;
-  };
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.buttonArea}>
-          <Text
-            onPress={this.onPressAddButton}
-            style={[styles.addButton, { marginRight: 16 }]}
-          >
-            Add
-          </Text>
-          <Text onPress={this.onPressDeleteButton} style={styles.deleteButton}>
-            Delete
-          </Text>
-        </View>
-        <View style={styles.mainArea}>
-          <View style={{ alignItems: 'center' }}>{this.renderBalls()}</View>
-        </View>
-      </View>
+      <ScrollView style={styles.container}>
+        <Text
+          onPress={() => {
+            this.props.navigator.push({
+              component: BallAnimation,
+              title: 'ボール',
+              passProps: {},
+            });
+          }}
+        >
+          ボールアニメーション
+        </Text>
+        <Text
+          onPress={() => {
+            this.props.navigator.push({
+              component: LottieAnimation,
+              title: 'Lottie',
+              passProps: {},
+            });
+          }}
+        >
+          Lottie アニメーション
+        </Text>
+      </ScrollView>
     );
   }
 }
