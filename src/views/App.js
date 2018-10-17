@@ -78,6 +78,7 @@ export default class App extends Component<Props, State> {
               index: 0,
             },
           }}
+          barStyle="black"
         />
       </View>
     );

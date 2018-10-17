@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import LottieView from 'lottie-react-native';
 
-import loading from '../assets/loading.json';
+import loading from '../assets/lottie/loading.json';
 
 const styles = StyleSheet.create({
   container: {
