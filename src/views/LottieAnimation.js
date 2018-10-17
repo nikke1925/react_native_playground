@@ -1,7 +1,10 @@
 // @flow
 
 import React, { Component } from 'react';
-import { LayoutAnimation, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import LottieView from 'lottie-react-native';
+
+import loading from '../assets/loading.json';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,23 +13,28 @@ const styles = StyleSheet.create({
   },
 });
 
-type State = {
-  ballNum: number,
-};
-type Props = {};
+export default class LottieAnimation extends Component {
+  loadingAnimation: LottieView;
 
-export default class LottieAnimation extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      ballNum: 3, // 初期描画用
-    };
+  componentDidMount() {
+    if (this.loadingAnimation) this.loadingAnimation.play();
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text>Lottie</Text>
+        <LottieView
+          style={{
+            width: 100,
+            height: 120,
+            paddingTop: 90,
+            alignSelf: 'center',
+          }}
+          ref={(refs) => {
+            this.loadingAnimation = refs;
+          }}
+          source={loading}
+        />
       </View>
     );
   }
