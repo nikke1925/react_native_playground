@@ -64,7 +64,7 @@ export default class Route extends Component<Props, State> {
             }}
             style={[styles.text, { marginBottom: 16 }]}
           >
-            Card Interaction (WIP)
+            Card Interaction
           </Text>
         </View>
       </ScrollView>
