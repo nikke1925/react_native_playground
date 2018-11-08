@@ -1,13 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import {
-  NavigatorIOS,
-  LayoutAnimation,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { NavigatorIOS, StyleSheet, View } from 'react-native';
 import Route from './Route';
 
 const styles = StyleSheet.create({
