@@ -9,33 +9,35 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native';
 
-const SEMI_MODAL_HEIGHT = 330;
+const MODAL_HEIGHT = 270;
+const MODAL_CLOSE_THRESHOLD = -40; // 閾値(40px下に動かしたら閉じる)
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#151F2B',
   },
-  semiModal: {
+  modal: {
     backgroundColor: '#151F2B',
     height: Dimensions.get('window').height,
     width: '100%',
     position: 'absolute',
-    top: Dimensions.get('window').height - SEMI_MODAL_HEIGHT,
+    top: Dimensions.get('window').height - MODAL_HEIGHT, // 初期位置
     borderRadius: 16,
-    padding: 16,
-  },
-  semiModalScrollArea: {
-    // backgroundColor: 'blue',
+    paddingVertical: 24,
+    paddingHorizontal: 24,
   },
   modalBackground: {
+    position: 'absolute',
+    backgroundColor: '#000000',
+    opacity: 0.64,
+    top: 0,
+    left: 0,
     height: Dimensions.get('window').height,
-    width: Dimensions.get('window').width,
-    backgroundColor: '#080A0FEE',
+    width: '100%',
   },
   modalText: {
     color: '#FFF',
@@ -50,7 +52,7 @@ const styles = StyleSheet.create({
   },
   modalCancelButton: {
     borderRadius: 32,
-    height: 32,
+    height: 40,
     backgroundColor: '#243347',
     justifyContent: 'center',
     alignItems: 'center',
@@ -70,15 +72,14 @@ export default class SemiModal extends Component<Props, State> {
       modalPan: new Animated.ValueXY(0),
       modalBgPan: new Animated.ValueXY(0),
     };
-    this.state.modalPan.setValue({ x: 0, y: SEMI_MODAL_HEIGHT * 2 });
+    this.state.modalPan.setValue({ x: 0, y: MODAL_HEIGHT * 2 });
     this.state.modalBgPan.setValue({ x: 0, y: Dimensions.get('window').height });
 
     this.panResponder = PanResponder.create({
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
 
-      // Initially, set the value of x and y to 0 (the center of the screen)
-      onPanResponderGrant: (e, gestureState) => {
+      onPanResponderGrant: () => {
         this.state.modalPan.setValue({ x: 0, y: 0 });
       },
 
@@ -90,7 +91,7 @@ export default class SemiModal extends Component<Props, State> {
       ]),
 
       onPanResponderRelease: (e, gestureState) => {
-        if (gestureState.moveY > 420) {
+        if (gestureState.y0 - gestureState.moveY < MODAL_CLOSE_THRESHOLD) {
           this.modalClose();
         } else {
           this.modalOpen();
@@ -99,17 +100,15 @@ export default class SemiModal extends Component<Props, State> {
     });
   }
 
-  componentDidMount() {}
-
   modalClose = () => {
     Animated.parallel([
       Animated.spring(this.state.modalPan, {
-        toValue: { x: 0, y: SEMI_MODAL_HEIGHT * 2 },
+        toValue: { x: 0, y: MODAL_HEIGHT * 2 },
         useNativeDriver: true,
       }),
       Animated.timing(this.state.modalBgPan, {
         toValue: { x: 0, y: Dimensions.get('window').height },
-        duration: 10,
+        duration: 50,
         useNativeDriver: true,
       }),
     ]).start();
@@ -123,7 +122,7 @@ export default class SemiModal extends Component<Props, State> {
       }),
       Animated.timing(this.state.modalBgPan, {
         toValue: { x: 0, y: 0 },
-        duration: 10,
+        duration: 50,
         useNativeDriver: true,
       }),
     ]).start();
@@ -132,57 +131,47 @@ export default class SemiModal extends Component<Props, State> {
   render() {
     return (
       <View style={styles.container}>
-        <Text
-          style={{ color: '#FFF' }}
-          onPress={() => {
-            this.modalOpen();
-          }}
-        >
-          モーダル
-        </Text>
-        <Text style={{ color: '#FFF' }}>モーダル</Text>
-        <Text style={{ color: '#FFF' }}>モーダル</Text>
-        <Text style={{ color: '#FFF' }}>モーダル</Text>
-        <Text style={{ color: '#FFF' }}>モーダル</Text>
-        <Text style={{ color: '#FFF' }}>モーダル</Text>
-        <Text style={{ color: '#FFF' }}>モーダル</Text>
-        <Text style={{ color: '#FFF' }}>モーダル</Text>
-        <Text style={{ color: '#FFF' }}>モーダル</Text>
-        <Text style={{ color: '#FFF' }}>モーダル</Text>
-        <Text style={{ color: '#FFF' }}>モーダル</Text>
+        <View style={{ paddingVertical: 32 }}>
+          <Text
+            style={{ color: '#FFF', textAlign: 'center' }}
+            onPress={() => {
+              this.modalOpen();
+            }}
+          >
+            モーダルを開く
+          </Text>
+        </View>
         <TouchableWithoutFeedback onPress={() => this.modalClose()}>
           <Animated.View
             style={[
-              {
-                position: 'absolute',
-                backgroundColor: '#151F2BAA',
-                top: 0,
-                left: 0,
-                height: Dimensions.get('window').height,
-                width: '100%',
-              },
+              styles.modalBackground,
               { transform: this.state.modalBgPan.getTranslateTransform() },
             ]}
           />
         </TouchableWithoutFeedback>
         <Animated.View
-          style={[styles.semiModal, { transform: this.state.modalPan.getTranslateTransform() }]}
+          style={[styles.modal, { transform: this.state.modalPan.getTranslateTransform() }]}
           {...this.panResponder.panHandlers}
         >
-          <Text style={[styles.modalText, { marginBottom: 16 }]}>フォローを解除</Text>
-          <Text style={[styles.modalText, { marginBottom: 16 }]}>ミュート</Text>
-          <Text style={[styles.modalText, { marginBottom: 16 }]}>ブロック</Text>
-          <Text style={[styles.modalText, { marginBottom: 16 }]}>報告</Text>
-          <TouchableOpacity
-            onPress={() => {
-              this.modalClose();
-            }}
-            style={styles.modalCancelArea}
-          >
-            <View style={styles.modalCancelButton}>
-              <Text style={[styles.modalText]}>キャンセル</Text>
+          {/* TODO ここの View を外部から注入できるようにする */}
+          <View>
+            <View style={{ marginBottom: 4 }}>
+              <Text style={[styles.modalText, { marginBottom: 16 }]}>フォローを解除</Text>
+              <Text style={[styles.modalText, { marginBottom: 16 }]}>ミュート</Text>
+              <Text style={[styles.modalText, { marginBottom: 16 }]}>ブロック</Text>
+              <Text style={[styles.modalText, { marginBottom: 16 }]}>報告</Text>
             </View>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                this.modalClose();
+              }}
+              style={styles.modalCancelArea}
+            >
+              <View style={styles.modalCancelButton}>
+                <Text style={[styles.modalText]}>キャンセル</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </Animated.View>
       </View>
     );
