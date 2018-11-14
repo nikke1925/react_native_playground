@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 24,
     paddingHorizontal: 24,
+    paddingTop: 8,
   },
   modalBackground: {
     position: 'absolute',
@@ -57,6 +58,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  bar: {
+    width: 16,
+    borderBottomWidth: 4,
+    borderColor: '#FFFFFF44',
+  },
+  leftBar: {
+    borderRadius: 16,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  rightBar: {
+    borderRadius: 16,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+  },
 });
 
 type State = {};
@@ -65,7 +81,7 @@ type Props = {
   modalBgPan: Animated,
 };
 
-export default class SemiModal extends Component<Props, State> {
+export default class SemiModalAnimation extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -155,6 +171,17 @@ export default class SemiModal extends Component<Props, State> {
         >
           {/* TODO ここの View を外部から注入できるようにする */}
           <View>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                marginBottom: 24,
+                justifyContent: 'center',
+              }}
+            >
+              <View style={[styles.bar, styles.leftBar]} />
+              <View style={[styles.bar, styles.rightBar]} />
+            </View>
             <View style={{ marginBottom: 4 }}>
               <Text style={[styles.modalText, { marginBottom: 16 }]}>フォローを解除</Text>
               <Text style={[styles.modalText, { marginBottom: 16 }]}>ミュート</Text>

@@ -5,7 +5,7 @@ import { View, ScrollView, StyleSheet, Text } from 'react-native';
 import BallAnimation from './BallAnimation';
 import LottieAnimation from './LottieAnimation';
 import CardInteraction from './CardInteraction';
-import SemiModal from './SemiModal';
+import SemiModalAnimation from './SemiModalAnimation';
 
 const styles = StyleSheet.create({
   container: {
@@ -70,8 +70,8 @@ export default class Route extends Component<Props, State> {
           <Text
             onPress={() => {
               this.props.navigator.push({
-                component: SemiModal,
-                title: 'SemiModal',
+                component: SemiModalAnimation,
+                title: 'SemiModalAnimation',
                 passProps: {},
               });
             }}
