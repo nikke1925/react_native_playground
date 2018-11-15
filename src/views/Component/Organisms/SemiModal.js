@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import {
   PanResponder,
   View,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   Animated,
   Dimensions,
   StyleSheet,
@@ -65,8 +65,7 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     position: 'absolute',
-    backgroundColor: '#000000',
-    opacity: 0.64,
+    backgroundColor: '#00000066',
     top: 0,
     left: 0,
     height: Dimensions.get('window').height,
@@ -186,16 +185,15 @@ export default class SemiModal extends Component<Props, State> {
           { transform: this.state.modalBgPan.getTranslateTransform() },
         ]}
       >
-        <TouchableOpacity onPress={() => this.modalClose()}>
-          <View style={{ height: '100%' }}>
-            <Animated.View
-              style={[styles.modal, { transform: this.state.modalPan.getTranslateTransform() }]}
-              {...this.panResponder.panHandlers}
-            >
-              {this.props.children}
-            </Animated.View>
-          </View>
-        </TouchableOpacity>
+        <TouchableWithoutFeedback onPress={() => this.modalClose()}>
+          <View style={{ height: '100%' }} />
+        </TouchableWithoutFeedback>
+        <Animated.View
+          style={[styles.modal, { transform: this.state.modalPan.getTranslateTransform() }]}
+          {...this.panResponder.panHandlers}
+        >
+          {this.props.children}
+        </Animated.View>
       </Animated.View>
     );
   }
