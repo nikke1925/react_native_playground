@@ -1,13 +1,28 @@
 {
   "parser": "babel-eslint",
-  "plugins": ["flowtype", "react-native"],
-  "extends": "airbnb",
+  "plugins": ["flowtype", "react-native", "prettier"],
+  "extends": ["airbnb", "prettier"],
   "globals": {
     "fetch": false,
-    "__DEV__": false
+    "__DEV__": false,
+    "alert": false
   },
   "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "semi": true,
+        "printWidth": 100,
+        "parser": "flow",
+        "trailingComma": "all",
+        "bracketSpacing": true,
+        "arrowParens": "avoid"
+      }
+    ],
+    "no-console": 0,
     "max-len": "off",
+    "no-useless-concat": 0,
     "react/jsx-filename-extension": [
       1,
       {
@@ -15,7 +30,7 @@
       }
     ],
     "react/prop-types": [
-      2,
+      0,
       {
         "ignore": ["navigator"]
       }
@@ -23,16 +38,12 @@
     "react/sort-comp": [
       2,
       {
-        "order": [
-          "type-annotations",
-          "static-methods",
-          "lifecycle",
-          "everything-else",
-          "render"
-        ]
+        "order": ["type-annotations", "static-methods", "lifecycle", "everything-else", "render"]
       }
     ],
     "class-methods-use-this": [0],
-    "flowtype/require-valid-file-annotation": [2, "always"]
+    "flowtype/require-valid-file-annotation": [2, "always"],
+    "arrow-parens": [1, "as-needed"],
+    "react-native/no-unused-styles": 2
   }
 }
