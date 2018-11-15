@@ -9,48 +9,16 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import SemiModal from './Component/Organisms/SemiModal';
-
-const MODAL_HEIGHT = 270;
-const MODAL_CLOSE_THRESHOLD = -40; // 閾値(40px下に動かしたら閉じる)
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#151F2B',
   },
-  modal: {
-    backgroundColor: '#151F2B',
-    height: Dimensions.get('window').height,
-    width: '100%',
-    position: 'absolute',
-    top: Dimensions.get('window').height - MODAL_HEIGHT, // 初期位置
-    borderRadius: 16,
-    paddingVertical: 24,
-    paddingHorizontal: 24,
-    paddingTop: 8,
-  },
-  modalBackground: {
-    position: 'absolute',
-    backgroundColor: '#000000',
-    opacity: 0.64,
-    top: 0,
-    left: 0,
-    height: Dimensions.get('window').height,
-    width: '100%',
-  },
   modalText: {
     color: '#FFF',
-  },
-  modalCancel: {
-    borderRadius: 32,
-    height: 32,
-    backgroundColor: '#243347',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   modalCancelButton: {
     borderRadius: 32,
@@ -110,7 +78,16 @@ export default class SemiModalAnimation extends Component<Props, State> {
             モーダルを開く
           </Text>
         </View>
-        <SemiModal isVisible={this.state.isVisible} onModalClose={() => this.modalClose()}>
+        <SemiModal
+          isVisible={this.state.isVisible}
+          onModalClose={() => this.modalClose()}
+          style={{
+            paddingVertical: 24,
+            paddingHorizontal: 24,
+            paddingTop: 8,
+            backgroundColor: '#151F2B',
+          }}
+        >
           <View>
             <View
               style={{

@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import {
+  YellowBox,
   PanResponder,
   View,
   TouchableWithoutFeedback,
@@ -11,18 +12,18 @@ import {
 } from 'react-native';
 
 type Props = {
-  style?: Object,
-  children: React.Node,
-  onPress?: Function,
+  children: any,
   isVisible: boolean,
   onModalClose: Function,
+  style?: Object,
 };
 
 type State = {
-  sizeRatio: Animated,
+  modalPan: Animated,
+  modalBgPan: Animated,
 };
 
-const MODAL_HEIGHT = 270;
+const MODAL_HEIGHT = 270; // TODO 明示的に書かなくても良いようにする
 const MODAL_CLOSE_THRESHOLD = -40; // 閾値(40px下に動かしたら閉じる)
 const MODAL_BG_OPEN_DURATION = 50;
 const MODAL_BG_CLOSE_DURATION = 50;
@@ -30,14 +31,10 @@ const MODAL_BG_CLOSE_DURATION = 50;
 const styles = StyleSheet.create({
   modal: {
     position: 'absolute',
-    backgroundColor: '#151F2B',
     height: Dimensions.get('window').height,
     width: '100%',
     top: Dimensions.get('window').height - MODAL_HEIGHT, // 初期位置
     borderRadius: 16,
-    paddingVertical: 24,
-    paddingHorizontal: 24,
-    paddingTop: 8,
   },
   modalBackground: {
     position: 'absolute',
@@ -50,7 +47,16 @@ const styles = StyleSheet.create({
 });
 
 export default class SemiModal extends Component<Props, State> {
+  modalRef: View;
+  panResponder: PanResponder;
+
+  static defaultProps = {
+    style: {},
+  };
+
   constructor(props: Props) {
+    YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
+
     super(props);
     this.state = {
       modalPan: new Animated.ValueXY(0),
@@ -84,13 +90,24 @@ export default class SemiModal extends Component<Props, State> {
     });
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (prevProps.isVisible === false && this.props.isVisible === true) {
       this.modalOpen();
     }
   }
 
   modalOpen = () => {
+    if (this.modalRef) {
+      setTimeout(() => {
+        this.modalRef.measure((x, y, dx, dy) => {
+          console.log(x);
+          console.log(y);
+          console.log(dx);
+          console.log(dy);
+        });
+      }, 2000);
+    }
+
     Animated.parallel([
       Animated.spring(this.state.modalPan, {
         toValue: { x: 0, y: 0 },
@@ -134,17 +151,22 @@ export default class SemiModal extends Component<Props, State> {
           <View style={{ height: '100%' }} />
         </TouchableWithoutFeedback>
         <Animated.View
-          style={[styles.modal, { transform: this.state.modalPan.getTranslateTransform() }]}
+          style={[
+            styles.modal,
+            { transform: this.state.modalPan.getTranslateTransform() },
+            this.props.style,
+          ]}
           {...this.panResponder.panHandlers}
         >
-          {this.props.children}
+          <View
+            ref={refs => {
+              this.modalRef = refs;
+            }}
+          >
+            {this.props.children}
+          </View>
         </Animated.View>
       </Animated.View>
     );
   }
 }
-
-SemiModal.defaultProps = {
-  style: {},
-  onPress: () => {}, // デフォルト何もしない
-};
