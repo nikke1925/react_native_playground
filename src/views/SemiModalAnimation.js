@@ -11,6 +11,7 @@ import {
   View,
   TouchableWithoutFeedback,
 } from 'react-native';
+import SemiModal from './Component/Organisms/SemiModal';
 
 const MODAL_HEIGHT = 270;
 const MODAL_CLOSE_THRESHOLD = -40; // 閾値(40px下に動かしたら閉じる)
@@ -75,73 +76,25 @@ const styles = StyleSheet.create({
   },
 });
 
-type State = {};
-type Props = {
-  modalPan: Animated,
-  modalBgPan: Animated,
+type State = {
+  isVisible: boolean,
 };
+type Props = {};
 
 export default class SemiModalAnimation extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      modalPan: new Animated.ValueXY(0),
-      modalBgPan: new Animated.ValueXY(0),
+      isVisible: false,
     };
-    this.state.modalPan.setValue({ x: 0, y: MODAL_HEIGHT * 2 });
-    this.state.modalBgPan.setValue({ x: 0, y: Dimensions.get('window').height });
-
-    this.panResponder = PanResponder.create({
-      onMoveShouldSetResponderCapture: () => true,
-      onMoveShouldSetPanResponderCapture: () => true,
-
-      onPanResponderGrant: () => {
-        this.state.modalPan.setValue({ x: 0, y: 0 });
-      },
-
-      onPanResponderMove: Animated.event([
-        null,
-        {
-          dy: this.state.modalPan.y,
-        },
-      ]),
-
-      onPanResponderRelease: (e, gestureState) => {
-        if (gestureState.y0 - gestureState.moveY < MODAL_CLOSE_THRESHOLD) {
-          this.modalClose();
-        } else {
-          this.modalOpen();
-        }
-      },
-    });
   }
 
   modalClose = () => {
-    Animated.parallel([
-      Animated.spring(this.state.modalPan, {
-        toValue: { x: 0, y: MODAL_HEIGHT * 2 },
-        useNativeDriver: true,
-      }),
-      Animated.timing(this.state.modalBgPan, {
-        toValue: { x: 0, y: Dimensions.get('window').height },
-        duration: 50,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    this.setState({ isVisible: false });
   };
 
   modalOpen = () => {
-    Animated.parallel([
-      Animated.spring(this.state.modalPan, {
-        toValue: { x: 0, y: 0 },
-        useNativeDriver: true,
-      }),
-      Animated.timing(this.state.modalBgPan, {
-        toValue: { x: 0, y: 0 },
-        duration: 50,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    this.setState({ isVisible: true });
   };
 
   render() {
@@ -157,19 +110,7 @@ export default class SemiModalAnimation extends Component<Props, State> {
             モーダルを開く
           </Text>
         </View>
-        <TouchableWithoutFeedback onPress={() => this.modalClose()}>
-          <Animated.View
-            style={[
-              styles.modalBackground,
-              { transform: this.state.modalBgPan.getTranslateTransform() },
-            ]}
-          />
-        </TouchableWithoutFeedback>
-        <Animated.View
-          style={[styles.modal, { transform: this.state.modalPan.getTranslateTransform() }]}
-          {...this.panResponder.panHandlers}
-        >
-          {/* TODO ここの View を外部から注入できるようにする */}
+        <SemiModal isVisible={this.state.isVisible} onModalClose={() => this.modalClose()}>
           <View>
             <View
               style={{
@@ -199,7 +140,7 @@ export default class SemiModalAnimation extends Component<Props, State> {
               </View>
             </TouchableOpacity>
           </View>
-        </Animated.View>
+        </SemiModal>
       </View>
     );
   }
