@@ -6,6 +6,7 @@ import BallAnimation from './BallAnimation';
 import LottieAnimation from './LottieAnimation';
 import CardInteraction from './CardInteraction';
 import SemiModalAnimation from './SemiModalAnimation';
+import ImageInteraction from './ImageInteraction';
 
 const styles = StyleSheet.create({
   container: {
@@ -78,6 +79,18 @@ export default class Route extends Component<Props, State> {
             style={[styles.text, { marginBottom: 16 }]}
           >
             Semi Modal
+          </Text>
+          <Text
+            onPress={() => {
+              this.props.navigator.push({
+                component: ImageInteraction,
+                title: 'Image Interaction',
+                passProps: {},
+              });
+            }}
+            style={[styles.text, { marginBottom: 16 }]}
+          >
+            Image Interaction
           </Text>
         </View>
       </ScrollView>

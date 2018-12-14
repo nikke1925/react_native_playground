@@ -1,16 +1,8 @@
 // @flow
 
 import React, { Component } from 'react';
-import {
-  Dimensions,
-  TouchableOpacity,
-  Animated,
-  PanResponder,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import SemiModal from './Component/Organisms/SemiModal';
+import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import { SemiModal } from 'react-native-half-modal';
 
 const styles = StyleSheet.create({
   container: {
@@ -75,7 +67,7 @@ export default class SemiModalAnimation extends Component<Props, State> {
               this.modalOpen();
             }}
           >
-            モーダルを開く
+            OPEN
           </Text>
         </View>
         <SemiModal
@@ -101,10 +93,11 @@ export default class SemiModalAnimation extends Component<Props, State> {
               <View style={[styles.bar, styles.rightBar]} />
             </View>
             <View style={{ marginBottom: 4 }}>
-              <Text style={[styles.modalText, { marginBottom: 16 }]}>フォローを解除</Text>
-              <Text style={[styles.modalText, { marginBottom: 16 }]}>ミュート</Text>
-              <Text style={[styles.modalText, { marginBottom: 16 }]}>ブロック</Text>
-              <Text style={[styles.modalText, { marginBottom: 16 }]}>報告</Text>
+              <Text style={[styles.modalText, { marginBottom: 16 }]}>Remove</Text>
+              <Text style={[styles.modalText, { marginBottom: 16 }]}>Remove</Text>
+              <Text style={[styles.modalText, { marginBottom: 16 }]}>Mute</Text>
+              <Text style={[styles.modalText, { marginBottom: 16 }]}>Block</Text>
+              <Text style={[styles.modalText, { marginBottom: 16 }]}>Report</Text>
             </View>
             <TouchableOpacity
               onPress={() => {
@@ -113,7 +106,7 @@ export default class SemiModalAnimation extends Component<Props, State> {
               style={styles.modalCancelArea}
             >
               <View style={styles.modalCancelButton}>
-                <Text style={[styles.modalText]}>キャンセル</Text>
+                <Text style={[styles.modalText]}>Cancel</Text>
               </View>
             </TouchableOpacity>
           </View>
