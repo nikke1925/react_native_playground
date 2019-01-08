@@ -1,56 +1,56 @@
 // @flow
 
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   YellowBox,
-  Modal,
   Dimensions,
   Animated,
   TouchableWithoutFeedback,
   Image,
   StyleSheet,
   View,
-  Text
-} from "react-native";
+  Text,
+} from 'react-native';
+import Modal from 'react-native-modal';
 
 const IMAGE_1 =
-  "https://images.unsplash.com/photo-1539783559030-94d253662acd?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=dc2790e76eddcb04d43e7c47b489c735&auto=format&fit=crop&w=1300&q=80";
+  'https://images.unsplash.com/photo-1539783559030-94d253662acd?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=dc2790e76eddcb04d43e7c47b489c735&auto=format&fit=crop&w=1300&q=80';
 
 const DEFAULT_BORDER_RADIUS = 16;
 const DEFAULT_CARD_HEIGHT = 268;
-const DEFAULT_CARD_WIDTH = Dimensions.get("window").width - 48;
+const DEFAULT_CARD_WIDTH = Dimensions.get('window').width - 48;
 const DEFAULT_IMAGE_WIDTH = 160;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   card: {
-    backgroundColor: "#FFF",
+    backgroundColor: '#FFF',
     borderWidth: 0,
-    shadowColor: "#00000040",
+    shadowColor: '#00000040',
     shadowOffset: {
       width: 10,
-      height: 20
+      height: 20,
     },
     shadowOpacity: 1.0,
-    shadowRadius: 20
+    shadowRadius: 20,
   },
   cardBodyArea: {
-    padding: 16
+    padding: 16,
   },
   titleText: {
     fontSize: 20,
-    fontWeight: "800",
-    color: "#007aff"
+    fontWeight: '800',
+    color: '#007aff',
   },
   bodyText: {
-    fontWeight: "400"
+    fontWeight: '400',
   },
   footerText: {
-    fontWeight: "400",
-    color: "gray"
-  }
+    fontWeight: '400',
+    color: 'gray',
+  },
 });
 
 type Props = {};
@@ -62,7 +62,7 @@ type State = {
   cardTranslateX: Animated,
   cardTranslateY: Animated,
   height: Animated,
-  borderRadius: Animated
+  borderRadius: Animated,
 };
 
 export default class AppStoreInteraction extends Component<Props, State> {
@@ -70,10 +70,7 @@ export default class AppStoreInteraction extends Component<Props, State> {
   card: View;
 
   constructor(props: Props) {
-    YellowBox.ignoreWarnings([
-      "Warning: isMounted(...) is deprecated",
-      "Module RCTImageLoader"
-    ]);
+    YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
     super(props);
     this.state = {
       isOpen: false,
@@ -83,7 +80,7 @@ export default class AppStoreInteraction extends Component<Props, State> {
       cardTranslateX: new Animated.Value(0),
       cardTranslateY: new Animated.Value(0),
       height: new Animated.Value(DEFAULT_IMAGE_WIDTH),
-      borderRadius: new Animated.Value(DEFAULT_BORDER_RADIUS)
+      borderRadius: new Animated.Value(DEFAULT_BORDER_RADIUS),
     };
   }
 
@@ -93,24 +90,23 @@ export default class AppStoreInteraction extends Component<Props, State> {
 
   onPressCard = () => {
     if (!this.state.isOpen) {
-      this.openCardAnimation();
-      this.setState({ isOpen: true });
+      this.openCardAnimation(() => this.setState({ isOpen: true }));
     } else {
       this.closeCardAnimation();
       this.setState({ isOpen: false });
     }
   };
 
-  openCardAnimation = () => {
+  openCardAnimation = (callback: Function) => {
     if (this.card) {
       this.card.measure((fx, fy, width, height, px, py) => {
         Animated.parallel([
           // カードのアニメーション
           Animated.spring(this.state.cardWidth, {
-            toValue: Dimensions.get("window").width
+            toValue: Dimensions.get('window').width,
           }),
           Animated.spring(this.state.cardHeight, {
-            toValue: Dimensions.get("window").height
+            toValue: Dimensions.get('window').height,
           }),
           Animated.spring(this.state.cardBorderRadius, { toValue: 0 }),
           Animated.spring(this.state.cardTranslateX, { toValue: -fx }),
@@ -118,25 +114,26 @@ export default class AppStoreInteraction extends Component<Props, State> {
 
           // 画像のアニメーション
           Animated.spring(this.state.height, { toValue: 300 }),
-          Animated.spring(this.state.borderRadius, { toValue: 0 })
+          Animated.spring(this.state.borderRadius, { toValue: 0 }),
         ]).start(() => {
-          // 別のビューに遷移させる記述
+          callback();
         });
       });
     }
   };
 
-  closeCardAnimation = () => {
+  closeCardAnimation = (callback: Function) => {
+    callback();
     Animated.parallel([
       // カードのアニメーション
       Animated.spring(this.state.cardWidth, {
-        toValue: DEFAULT_CARD_WIDTH
+        toValue: DEFAULT_CARD_WIDTH,
       }),
       Animated.spring(this.state.cardHeight, {
-        toValue: DEFAULT_CARD_HEIGHT
+        toValue: DEFAULT_CARD_HEIGHT,
       }),
       Animated.spring(this.state.cardBorderRadius, {
-        toValue: DEFAULT_BORDER_RADIUS
+        toValue: DEFAULT_BORDER_RADIUS,
       }),
       Animated.spring(this.state.cardTranslateX, { toValue: 0 }),
       Animated.spring(this.state.cardTranslateY, { toValue: 0 }),
@@ -144,8 +141,8 @@ export default class AppStoreInteraction extends Component<Props, State> {
       // 画像のアニメーション
       Animated.spring(this.state.height, { toValue: DEFAULT_IMAGE_WIDTH }),
       Animated.spring(this.state.borderRadius, {
-        toValue: DEFAULT_BORDER_RADIUS
-      })
+        toValue: DEFAULT_BORDER_RADIUS,
+      }),
     ]).start(() => {});
   };
 
@@ -153,11 +150,27 @@ export default class AppStoreInteraction extends Component<Props, State> {
     return (
       <View style={styles.container}>
         <Modal
-          isVisible={false}
-          animationType={"slide"}
-          onRequestClose={() => {}}
+          isVisible={this.state.isOpen}
+          animationIn={{ from: {}, to: {} }}
+          animationOut={{ from: {}, to: {} }}
+          backdropOpacity={1}
+          backdropColor={'#FFF'}
+          style={{ marginLeft: -24, marginTop: 88 }}
         >
-          <Text>hoge</Text>
+          <Image
+            style={{
+              width: '100%',
+              height: 268,
+              position: 'absolute',
+              top: 0,
+              left: 0,
+            }}
+            source={require('../assets/images/hireo.jpeg')}
+          />
+          <Text>Other View</Text>
+          <Text onPress={() => this.closeCardAnimation(() => this.setState({ isOpen: false }))}>
+            close
+          </Text>
         </Modal>
         <View style={{ padding: 24 }}>
           <TouchableWithoutFeedback
@@ -176,33 +189,31 @@ export default class AppStoreInteraction extends Component<Props, State> {
                   {
                     transform: [
                       { translateX: this.state.cardTranslateX },
-                      { translateY: this.state.cardTranslateY }
+                      { translateY: this.state.cardTranslateY },
                     ],
                     borderRadius: this.state.cardBorderRadius,
                     width: this.state.cardWidth,
-                    height: this.state.cardHeight
-                  }
+                    height: this.state.cardHeight,
+                  },
                 ]}
               >
                 <View
                   style={{
                     borderTopLeftRadius: 16,
                     borderTopRightRadius: 16,
-                    overflow: "hidden"
+                    overflow: 'hidden',
                   }}
                 >
                   <Animated.Image
                     style={{
-                      width: "100%",
-                      height: this.state.height
+                      width: '100%',
+                      height: this.state.height,
                     }}
-                    source={require("../assets/images/hireo.jpeg")}
+                    source={require('../assets/images/hireo.jpeg')}
                   />
                 </View>
                 <View style={styles.cardBodyArea}>
-                  <Text style={[styles.titleText, { marginBottom: 4 }]}>
-                    Title
-                  </Text>
+                  <Text style={[styles.titleText, { marginBottom: 4 }]}>Title</Text>
                   <Text style={[styles.bodyText, { marginBottom: 4 }]}>
                     This is card component sample.
                   </Text>
@@ -210,9 +221,8 @@ export default class AppStoreInteraction extends Component<Props, State> {
                     numberOfLines={!this.state.isOpen ? 1 : null}
                     style={[styles.footerText, { marginBottom: 4 }]}
                   >
-                    samplesample samplesample samplesample samplesample
-                    samplesample samplesample samplesample samplesample
-                    samplesample samplesample samplesample samplesample
+                    samplesample samplesample samplesample samplesample samplesample samplesample
+                    samplesample samplesample samplesample samplesample samplesample samplesample
                     samplesample samplesample
                   </Text>
                 </View>
